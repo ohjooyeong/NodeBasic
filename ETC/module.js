@@ -27,6 +27,8 @@ console.log(path.isAbsolute("C:\\")); // true 반환 이 경로가 절대경로�
 // / 루트 절대 경로
 
 console.log(path.relative("C:\\github\\NodeBasic\\module.js", "C:\\")); // 첫번째 인자가 두번째 인자로 갈때의 상대경로를 알려준다.
+// ..\..\..
+console.log(path.relative(".", "./nodebasic/etc"));
 
 console.log(__dirname);
 console.log(path.join(__dirname, "..", "/github", ".", "NodeBasic")); // 조각난 폴더의 경로를 합쳐준다 절대 경로 무시하고 합침
