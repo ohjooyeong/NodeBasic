@@ -31,6 +31,8 @@ module.exports = (sequelize, DataTypes) => {
         {
             timestamps: true, // 생성일, 수정일
             paranoid: true, // 삭제일(복구용)
+            charset: "utf8",
+            collate: "utf8_unicode_ci",
         }
     );
 };
