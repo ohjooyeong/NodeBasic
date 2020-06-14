@@ -12,7 +12,21 @@ module.exports = (passport) => {
     // 세션 메모리에서 id를 받아와서 정보값을 복구
     // 1 -> { id:1, name: ohjoo, age:26 } -> req.user
     passport.deserializeUser((id, done) => {
-        User.findOne({ where: { id } })
+        User.findOne({
+            where: { id },
+            include: [
+                {
+                    model: User,
+                    attributes: ["id", "nick"],
+                    as: "Followers",
+                },
+                {
+                    model: User,
+                    attributes: ["id", "nick"],
+                    as: "Followings",
+                },
+            ],
+        })
             .then((user) => done(null, user))
             .catch((err) => done(err));
     });

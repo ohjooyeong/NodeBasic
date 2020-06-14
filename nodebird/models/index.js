@@ -22,7 +22,7 @@ db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" });
 // 다대다 관계에서는 새로운 모델(테이블)이 생김 (PostHashtag라는 테이블로 생성시킴)
 
 db.User.belongsToMany(db.User, { through: "Follow", as: "Followers", foreignKey: "followingId" });
-db.User.belongsToMany(db.User, { through: "Follow", as: "Following", foreignKey: "followerId" });
+db.User.belongsToMany(db.User, { through: "Follow", as: "Followings", foreignKey: "followerId" });
 
 db.User.belongsToMany(db.Post, { through: "Like" });
 db.Post.belongsToMany(db.User, { through: "Like" });
