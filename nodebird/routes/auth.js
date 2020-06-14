@@ -58,4 +58,19 @@ router.get("/logout", isLoggedIn, (req, res) => {
     res.redirect("/");
 });
 
+// kakaoStrategy가 실행되게하는 라우터
+// 카카오로그인 과정 (1)
+router.get("/kakao", passport.authenticate("kakao"));
+
+// 카카오로그인 과정 (3)
+router.get(
+    "/kakao/callback",
+    passport.authenticate("kakao", {
+        failureRedirect: "/",
+    }),
+    (req, res) => {
+        res.redirect("/");
+    }
+);
+
 module.exports = router;

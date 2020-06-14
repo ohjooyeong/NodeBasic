@@ -17,7 +17,7 @@ module.exports = (passport) => {
             .catch((err) => done(err));
     });
     local(passport);
-    // kakao(passport);
+    kakao(passport);
 };
 
 // let users = [ ] ;
