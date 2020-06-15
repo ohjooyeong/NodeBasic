@@ -17,7 +17,19 @@ router.get("/join", isNotLoggedIn, (req, res) => {
 
 router.get("/", (req, res, next) => {
     Post.findAll({
-        include: { model: User, attributes: ["id", "nick"] },
+        include: [
+            {
+                // 작성자
+                model: User,
+                attributes: ["id", "nick"],
+            },
+            {
+                // 좋아요 누른 사람들
+                model: User,
+                attributes: ["id", "nick"],
+                as: "Liker",
+            },
+        ],
         order: [["createdAt", "DESC"]],
     })
         .then((posts) => {
