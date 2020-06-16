@@ -61,6 +61,17 @@ router.post("/", isLoggedIn, upload2.none(), async (req, res, next) => {
     }
 });
 
+router.delete("/:id", async (req, res, next) => {
+    try {
+        // 요청한 포스트의 ID와 그 포스트가 당사자의 포스트인지 req.user.id로 파악
+        await Post.destroy({ where: { id: req.params.id, userId: req.user.id } });
+        res.send("OK");
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
+
 router.get("/hashtag", async (req, res, next) => {
     const query = req.query.hashtag;
     if (!query) {
