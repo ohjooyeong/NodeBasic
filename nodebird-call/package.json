@@ -1,0 +1,15 @@
+{
+    "name": "nodebird-call",
+    "version": "0.0.1",
+    "description": "클라이언트 호출 서버",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon app",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Ohjoo",
+    "license": "MIT",
+    "devDependencies": {
+        "nodemon": "^2.0.4"
+    }
+}

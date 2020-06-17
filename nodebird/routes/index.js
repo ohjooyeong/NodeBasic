@@ -46,4 +46,32 @@ router.get("/", (req, res, next) => {
         });
 });
 
+// router.get("/", async (req, res, next) => {
+//     try {
+//         const posts = await Post.findAll({
+//             include: {
+//                 model: User,
+
+//                 attributes: ["id", "nick"],
+//             },
+
+//             order: [["createdAt", "DESC"]],
+//         });
+
+//         res.render("main", {
+//             title: "Nodebird",
+
+//             twits: posts,
+
+//             user: req.user,
+
+//             loginError: req.flash("loginError"),
+//         });
+//     } catch (err) {
+//         console.error(err);
+
+//         next(err);
+//     }
+// });
+
 module.exports = router;

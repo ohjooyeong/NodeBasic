@@ -20,7 +20,7 @@ passportConfig(passport); // 로그인 관련 모듈
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
-app.set("port", process.env.PORT || 8002);
+app.set("port", process.env.PORT || 8003);
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
