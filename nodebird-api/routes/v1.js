@@ -47,4 +47,75 @@ router.post("/token", async (req, res) => {
     }
 });
 
+router.get("/test", verifyToken, (req, res) => {
+    res.json(req.decoded);
+});
+
+router.get("/posts/my", verifyToken, (req, res) => {
+    Post.findAll({
+        where: { userId: req.decoded.id },
+    })
+        .then((posts) => {
+            console.log(posts);
+            res.json({
+                code: 200,
+                payload: posts,
+            });
+        })
+        .catch((error) => {
+            console.error(error);
+            return res.status(500).json({
+                code: 500,
+                message: "서버에러",
+            });
+        });
+});
+
+router.get("/posts/hashtag/:title", verifyToken, async (req, res) => {
+    try {
+        // 해시태그를 찾고
+        const hashtag = await Hashtag.findOne({ where: { title: req.params.title } });
+        // 없으면 없다고 리턴
+        if (!hashtag) {
+            return res.status(404).json({
+                code: 404,
+                message: "검색 결과가 없습니다.",
+            });
+        }
+
+        //있으면 있다고 포스트와 같이 리턴
+        const posts = await hashtag.getPosts();
+        return res.json({
+            code: 200,
+            payload: posts,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            code: 500,
+            message: "서버에러",
+        });
+    }
+});
+
+router.get("/follow", verifyToken, async (req, res) => {
+    try {
+        const user = await User.findOne({ where: { id: req.decoded.id } });
+        // attributes로 가져오고 싶은 데이터를 정할 수 있음.
+        const follower = await user.getFollowers({ attributes: ["id", "nick"] });
+        const following = await user.getFollowings({ attributes: ["id", "nick"] });
+        return res.json({
+            code: 200,
+            follower,
+            following,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            code: 500,
+            message: "서버에러",
+        });
+    }
+});
+
 module.exports = router;

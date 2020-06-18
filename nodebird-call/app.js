@@ -3,20 +3,11 @@ const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const path = require("path");
 const session = require("express-session");
-const flash = require("connect-flash");
-const passport = require("passport");
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
-const authRouter = require("./routes/auth");
-const v1 = require("./routes/v1");
-
-const { sequelize } = require("./models");
-const passportConfig = require("./passport");
 
 const app = express();
-sequelize.sync();
-passportConfig(passport); // 로그인 관련 모듈
 
 app.set("view engine", "pug");
 app.set("views", path.join(__dirname, "views"));
@@ -38,12 +29,7 @@ app.use(
         },
     })
 );
-app.use(flash());
-app.use(passport.initialize());
-app.use(passport.session());
 
-app.use("/v1", v1);
-app.use("/auth", authRouter);
 app.use("/", indexRouter);
 
 app.use((req, res, next) => {
