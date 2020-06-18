@@ -43,7 +43,19 @@ exports.apiLimiter = new RateLimit({
     handler(req, res) {
         res.status(this.statusCode).json({
             code: this.statusCode, // 429
-            message: "1분에 한 번만 요청할 수 있습니다.",
+            message: "무료 사용자는 1분에 한 번만 요청할 수 있습니다.",
+        });
+    },
+});
+
+exports.premiumApiLimiter = new RateLimit({
+    windowMs: 60 * 1000,
+    max: 1000,
+    delayMs: 0,
+    handler(req, res) {
+        res.status(this.statusCode).json({
+            code: this.statusCode, // 429
+            message: "유료 사용자는 1분에 한 번만 요청할 수 있습니다.",
         });
     },
 });

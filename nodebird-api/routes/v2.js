@@ -1,16 +1,43 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const cors = require("cors");
+const url = require("url");
 
-const { verifyToken, apiLimiter } = require("./middlewares");
+const { verifyToken, apiLimiter, premiumApiLimiter } = require("./middlewares");
 const { Domain, User, Post, Hashtag } = require("../models");
 
 const router = express.Router();
 
-router.post("/token", apiLimiter, async (req, res) => {
+// Access-Control-Allow-Origin헤더를 응답헤더에 넣어줘서 해결하는 미들웨어
+// router.use(cors()); == 아래와 같다( 왜? 커스터마이징을 하기 위해 )
+router.use(async (req, res, next) => {
+    // api서버에 등록되있는 도메인을 찾는다.
+    const domain = await Domain.findOne({
+        where: { host: url.parse(req.get("origin")).host },
+    });
+    if (domain) {
+        cors({ origin: req.get("origin") })(req, res, next);
+    } else {
+        next();
+    }
+});
+
+router.use(async (req, res, next) => {
+    const domain = await Domain.findOne({
+        where: { host: url.parse(req.get("origin")).host },
+    });
+    if (domain.type === "premium") {
+        premiumApiLimiter(req, res, next);
+    } else {
+        apiLimiter(req, res, next);
+    }
+});
+
+router.post("/token", async (req, res) => {
     const { clientSecret } = req.body;
     try {
         const domain = await Domain.findOne({
-            where: { clientSecret },
+            where: { frontSecret: clientSecret },
             include: {
                 model: User,
                 attribute: ["nick", "id"],
@@ -47,11 +74,11 @@ router.post("/token", apiLimiter, async (req, res) => {
     }
 });
 
-router.get("/test", apiLimiter, verifyToken, (req, res) => {
+router.get("/test", verifyToken, (req, res) => {
     res.json(req.decoded);
 });
 
-router.get("/posts/my", apiLimiter, verifyToken, (req, res) => {
+router.get("/posts/my", verifyToken, (req, res) => {
     Post.findAll({
         where: { userId: req.decoded.id },
     })
@@ -70,7 +97,7 @@ router.get("/posts/my", apiLimiter, verifyToken, (req, res) => {
         });
 });
 
-router.get("/posts/hashtag/:title", apiLimiter, verifyToken, async (req, res) => {
+router.get("/posts/hashtag/:title", verifyToken, async (req, res) => {
     try {
         // 해시태그를 찾고
         const hashtag = await Hashtag.findOne({ where: { title: req.params.title } });
@@ -97,7 +124,7 @@ router.get("/posts/hashtag/:title", apiLimiter, verifyToken, async (req, res) =>
     }
 });
 
-router.get("/follow", apiLimiter, verifyToken, async (req, res) => {
+router.get("/follow", verifyToken, async (req, res) => {
     try {
         const user = await User.findOne({ where: { id: req.decoded.id } });
         // attributes로 가져오고 싶은 데이터를 정할 수 있음.
