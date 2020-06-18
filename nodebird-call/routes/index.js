@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-const URL = "http://localhost:8002/v1";
+const URL = "http://localhost:8002/v2";
 
 //  nodebird-call ---->>> nodebird-api
 // axios는 다른 서버에 요청을 보내는 간단하고 유용한 라이브러리 axios.메서드(주소, 옵션)
